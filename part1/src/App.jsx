@@ -1,58 +1,53 @@
-const Header = ({course}) => {
-  return(
-    <h1>{course}</h1>
-  )
-}
+import { useState } from 'react'
 
-const Part = (props) => {
-  return(
-    <p>
-      {props.part} {props.exercise}
-    </p>
-  )
-}
-
-const Content = (props) => {
+const StatisticLine = ({text, value}) => {
+  if(value > 0){
     return(
-      <>
-        <Part part={props.parts[0]["name"]} exercise={props.parts[0]["exercises"]} />
-        <Part part={props.parts[1]["name"]} exercise={props.parts[1]["exercises"]} />
-        <Part part={props.parts[2]["name"]} exercise={props.parts[2]["exercises"]} />
-      </>
-      )
-}
-
-const Total = (props) => {
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
+    )
+  }
   return(
-    <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>
+    <tr><td>No data given</td></tr>
   )
 }
 
+const Button = ({setValue, value, text}) => {
+  const handleClick = () =>{
+    setValue(value + 1)
+  }
+  return(
+    <button onClick={handleClick}>{text}</button>
+  )
+}
 
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  // save clicks of each button to its own state
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
+
+  
 
   return (
     <div>
-      <Header course={course["name"]} />
-      <Content parts={course["parts"]} />
-      <Total parts={course["parts"]} />
+      <h1>give feedback</h1>
+      <Button setValue={setGood} value={good} text="good"></Button>
+      <Button setValue={setNeutral} value={neutral} text="neutral"></Button>
+      <Button setValue={setBad} value={bad} text="bad"></Button>
+
+      <table>
+          <tbody>
+            <StatisticLine text="good" value={good} />
+            <StatisticLine text="neutral" value={neutral} />
+            <StatisticLine text="bad" value={bad} />
+            <StatisticLine text="total" value={good+neutral+bad} />
+            <StatisticLine text="average" value={(good+neutral+bad)/3} />
+            <StatisticLine text="positive" value={(good/(neutral+bad))*100} />
+          </tbody>
+      </table>
     </div>
   )
 }
